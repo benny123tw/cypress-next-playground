@@ -22,9 +22,6 @@ jobs:
 
       - run: pnpm install
 
-      - name: Cypress PNPM Patch
-        run: cp pnpm-lock.yaml package-lock.json
-
       - name: Cypress
         uses: cypress-io/github-action@v5.8.3
         with:
