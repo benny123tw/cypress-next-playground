@@ -1,31 +1,59 @@
-describe('Routes', () => {
-  it('should match about page', () => {
-    cy.visit('http://localhost:3000')
-    cy.get('[data-test-id="about"]').click({ force: true })
-
-    cy.url().should('eq', 'http://localhost:3000/about')
+describe('Basic', () => {
+  beforeEach(() => {
+    cy.visit('/')
   })
 
-  it('should match dashboard page', () => {
-    cy.visit('http://localhost:3000')
-    cy.get('[data-test-id="dashboard"]').click({ force: true })
+  it('dynamic route', () => {
+    cy.url().should('eq', 'http://localhost:3000/')
 
-    cy.url().should('eq', 'http://localhost:3000/dashboard')
-  })
-
-  it('should match settings page', () => {
-    cy.visit('http://localhost:3000')
-    cy.get('[data-test-id="settings"]').click({ force: true })
-
-    cy.url().should('eq', 'http://localhost:3000/dashboard/settings')
-  })
-
-  it('dynamic route should match', () => {
-    cy.visit('http://localhost:3000')
-    cy.getByTestId('name-input').type('Benny')
-
-    cy.getByTestId('submit-btn').click()
+    cy.getByTestId('name-input').type('Benny{enter}')
 
     cy.url().should('eq', 'http://localhost:3000/hi/Benny')
+  })
+
+  it('about', () => {
+    cy.getByTestId('footer-about').click()
+
+    cy.url().should('eq', 'http://localhost:3000/about')
+
+    cy.contains('This is About page').should('exist')
+
+    cy.getByTestId('footer-home').click()
+
+    cy.url().should('eq', 'http://localhost:3000/')
+  })
+
+  it('counter', () => {
+    cy.getByTestId('count').should('have.text', '0')
+    cy.getByTestId('warn-text').should('have.class', 'hidden')
+
+    cy.getByTestId('btn-inc-1').click()
+    cy.getByTestId('count').should('have.text', '1')
+
+    cy.getByTestId('btn-dec-1').click()
+    cy.getByTestId('count').should('have.text', '0')
+
+    cy.getByTestId('btn-inc-5').click()
+    cy.getByTestId('count').should('have.text', '5')
+
+    cy.getByTestId('btn-dec-5').click()
+    cy.getByTestId('count').should('have.text', '0')
+
+    // should reached max and not greater than 10
+    cy.getByTestId('btn-inc-5').click()
+    cy.getByTestId('btn-inc-5').click()
+    cy.getByTestId('btn-inc-5').click()
+    cy.getByTestId('count').should('have.text', '10')
+    cy.getByTestId('warn-text').should('have.text', 'The value reached max')
+
+    cy.getByTestId('btn-reset').click()
+    cy.getByTestId('count').should('have.text', '0')
+
+    // should reached min and not lower than -10
+    cy.getByTestId('btn-dec-5').click()
+    cy.getByTestId('btn-dec-5').click()
+    cy.getByTestId('btn-dec-5').click()
+    cy.getByTestId('count').should('have.text', '-10')
+    cy.getByTestId('warn-text').should('have.text', 'The value reached min')
   })
 })
