@@ -3,7 +3,7 @@
 import { useCounter } from '@/hooks/useCounter'
 import { cn } from '@/lib/utils'
 
-export default function TheCounter() {
+export default function Counter() {
   const max = 10,
     min = -10
   const { count, inc, dec, reset } = useCounter(0, { max, min })
