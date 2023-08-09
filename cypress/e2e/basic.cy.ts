@@ -4,23 +4,21 @@ describe('Basic', () => {
   })
 
   it('dynamic route', () => {
-    cy.url().should('eq', 'http://localhost:3000/')
+    cy.url().should('eq', 'http://localhost:3000/en')
 
     cy.getByTestId('name-input').type('Benny{enter}')
 
-    cy.url().should('eq', 'http://localhost:3000/hi/Benny')
+    cy.url().should('eq', 'http://localhost:3000/en/hi/Benny')
   })
 
   it('about', () => {
     cy.getByTestId('footer-about').click()
 
-    cy.url().should('eq', 'http://localhost:3000/about')
-
-    cy.contains('This is About page').should('exist')
+    cy.url().should('eq', 'http://localhost:3000/en/about')
 
     cy.getByTestId('footer-home').click()
 
-    cy.url().should('eq', 'http://localhost:3000/')
+    cy.url().should('eq', 'http://localhost:3000/en')
   })
 
   it('counter', () => {

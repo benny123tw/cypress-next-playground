@@ -1,0 +1,19 @@
+{
+  "navigation": {
+    "home": "首頁",
+    "about": "關於"
+  },
+  "page": {
+    "home": {
+      "title": "歡迎來到首頁",
+      "description": "這是首頁的說明"
+    },
+    "about": {
+      "title": "歡迎來到介紹頁",
+      "description": "這是介紹頁的說明"
+    },
+    "hello": {
+      "greeting": "嗨"
+    }
+  }
+}
