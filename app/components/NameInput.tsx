@@ -22,7 +22,7 @@ export default function NameInput({ lang }: Props) {
   return (
     <input
       data-test-id="name-input"
-      className="w-full input input-primary"
+      className="input input-primary w-full"
       onChange={onchange}
       onKeyDown={(e) => e.key === 'Enter' && go()}
     />

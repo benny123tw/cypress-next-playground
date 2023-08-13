@@ -25,8 +25,8 @@ export default async function RootLayout({
     <html lang={lang ?? i18n.defaultLocale}>
       <body className={inter.className} suppressHydrationWarning={true}>
         <div className="relative flex flex-col">
-          <Header dict={dict} />
-          <div className="m-auto flex-1 py-8 prose lg:prose-lg">{children}</div>
+          <Header dict={dict} lang={lang} />
+          <div className="prose m-auto w-full flex-1 p-8 lg:prose-lg">{children}</div>
           <BottomNav lang={lang} dict={dict.navigation} />
         </div>
       </body>

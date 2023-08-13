@@ -2,10 +2,15 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
+import { Locale, i18n } from '@/i18n.config'
+import { LanguageIcon, ChevronDownIcon } from '@heroicons/react/24/outline'
+import { cn } from '@/lib/utils'
 
-import { i18n } from '@/i18n.config'
+interface Props {
+  lang: Locale
+}
 
-export default function LocaleSwitcher() {
+export default function LocaleSwitcher({ lang }: Props) {
   const pathName = usePathname()
 
   const redirectedPathName = (locale: string) => {
@@ -16,21 +21,16 @@ export default function LocaleSwitcher() {
   }
 
   return (
-    <div className="dropdown">
-      <label tabIndex={0} className="btn m-1">
-        Click
-      </label>
-      <ul
-        tabIndex={0}
-        className="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52"
-      >
+    <div className="dropdown dropdown-end">
+      <button className="btn btn-ghost m-1">
+        <LanguageIcon className="h-5 w-5" />
+        <ChevronDownIcon className="hidden h-2 w-2 fill-current opacity-60 sm:inline-block" />
+      </button>
+      <ul className="menu dropdown-content rounded-box z-[1] w-52 bg-base-100 p-2 shadow">
         {i18n.locales.map((locale) => {
           return (
-            <li key={locale}>
-              <Link
-                href={redirectedPathName(locale)}
-                className="hover:bg-violet-500 hover:text-white transition-colors ease-in-out p-2"
-              >
+            <li key={`locale-${locale}`}>
+              <Link href={redirectedPathName(locale)} className={cn({ active: lang === locale })}>
                 {locale}
               </Link>
             </li>
