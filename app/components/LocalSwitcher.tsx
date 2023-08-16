@@ -21,6 +21,7 @@ export default function LocaleSwitcher({ lang }: Props) {
   }
 
   return (
+    // eslint-disable-next-line prettier/prettier
     <div className="dropdown dropdown-end">
       <button className="btn btn-ghost m-1">
         <LanguageIcon className="h-5 w-5" />

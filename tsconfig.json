@@ -22,7 +22,8 @@
     ],
     "paths": {
       "@/*": ["./app/*"],
-      "~/*": ["./*"]
+      "~/*": ["./*"],
+      "contentlayer/generated": ["./.contentlayer/generated"]
     }
   },
   "include": [
