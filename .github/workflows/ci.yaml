@@ -44,7 +44,7 @@ jobs:
     strategy:
       fail-fast: false # https://github.com/cypress-io/github-action/issues/48
       matrix:
-        containers: [1, 2] # Uses 2 parallel instances
+        node-version: [16, 18] # Uses 2 parallel instances
     steps:
       - uses: actions/checkout@v3
       - uses: actions/cache@v3
@@ -53,6 +53,7 @@ jobs:
             ~/.cache
           key: cypress-cache-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml') }}
 
+      - run: node -v
       - uses: pnpm/action-setup@v2
 
       - name: Use Node.js ${{ matrix.node-version }}
