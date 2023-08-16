@@ -30,7 +30,10 @@ jobs:
           cache: pnpm
 
       - name: Install
-        run: pnpm install
+        run: pnpm install --frozen-lockfile
+
+      - name: Generate content layer
+        run: npx contentlayer build
 
       - name: Typecheck
         run: pnpm run type-check
@@ -49,8 +52,9 @@ jobs:
       - uses: actions/cache@v3
         with:
           path: |
-            ~/.cache
-          key: cypress-cache-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml') }}
+            ~/.cache/Cypress
+            ${{ github.workspace }}/.next/cache
+          key: cypress-cache-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml') }}--${{ hashFiles('**/*.[jt]s', '**/*.[jt]sx') }}
 
       - run: node -v
       - uses: pnpm/action-setup@v2
@@ -62,12 +66,17 @@ jobs:
           registry-url: https://registry.npmjs.org/
           cache: pnpm
 
-      - run: pnpm install
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Generate content
+        run: npx contentlayer build
 
       - name: Cypress
         uses: cypress-io/github-action@v5.8.3
         with:
           tag: github
+          install: false
           build: pnpm build
           start: pnpm start
           wait-on: 'http://localhost:3000' # Waits for above
@@ -108,12 +117,16 @@ jobs:
           registry-url: https://registry.npmjs.org/
           cache: pnpm
 
-      - run: pnpm install
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Generate content
+        run: npx contentlayer build
 
       - name: Cypress
         uses: cypress-io/github-action@v5.8.3
         with:
-          tag: github-component
+          tag: github
           component: true
           build: pnpm build
           start: pnpm start

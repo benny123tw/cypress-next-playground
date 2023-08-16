@@ -1,3 +1,4 @@
+import { Mdx } from '@/components/Mdx'
 import { allDocs } from 'contentlayer/generated'
 import { notFound } from 'next/navigation'
 
@@ -18,5 +19,9 @@ async function getDocFromParams(slug: string) {
 export default async function Post({ params: { slug } }: Props) {
   const doc = await getDocFromParams(slug)
 
-  return <>{JSON.stringify(doc)}</>
+  return (
+    <>
+      <Mdx code={doc.body.code} />
+    </>
+  )
 }
