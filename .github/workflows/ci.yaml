@@ -36,7 +36,6 @@ jobs:
         run: pnpm run type-check
 
   e2e-test:
-    container: cypress/included:latest
     runs-on: ubuntu-latest
     # Runs tests in parallel with matrix strategy https://docs.cypress.io/guides/guides/parallelization
     # https://docs.github.com/en/actions/using-jobs/using-a-matrix-for-your-jobs
@@ -44,7 +43,7 @@ jobs:
     strategy:
       fail-fast: false # https://github.com/cypress-io/github-action/issues/48
       matrix:
-        node-version: [16, 18] # Uses 2 parallel instances
+        node-version: [16, 18, 20] # Uses 2 parallel instances
     steps:
       - uses: actions/checkout@v3
       - uses: actions/cache@v3
@@ -69,7 +68,6 @@ jobs:
         uses: cypress-io/github-action@v5.8.3
         with:
           tag: github
-          browser: chrome
           build: pnpm build
           start: pnpm start
           wait-on: 'http://localhost:3000' # Waits for above
@@ -116,7 +114,6 @@ jobs:
         uses: cypress-io/github-action@v5.8.3
         with:
           tag: github-component
-          browser: chrome
           component: true
           build: pnpm build
           start: pnpm start
