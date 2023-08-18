@@ -8,6 +8,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint --dir .",
+    "build:ci": "npx contentlayer build && next build",
     "format": "prettier --write .",
     "type-check": "tsc --noEmit",
     "postinstall": "npx simple-git-hooks"

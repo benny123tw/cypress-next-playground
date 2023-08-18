@@ -45,7 +45,9 @@ export default function Header({ dict, lang }: Props) {
         </div>
       </div>
       <div className="flex-1">
-        <a className="btn btn-ghost hidden text-xl normal-case sm:block">Next 13.4 & Cypress</a>
+        <a className="btn btn-ghost hidden text-xl normal-case sm:inline-flex">
+          Next 13.4 & Cypress
+        </a>
       </div>
       <div className="flex-none">
         <ThemeSwitcher />

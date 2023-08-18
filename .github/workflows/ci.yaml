@@ -38,8 +38,33 @@ jobs:
       - name: Typecheck
         run: pnpm run type-check
 
+  install:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Install Pnpm
+        uses: pnpm/action-setup@v2
+
+      - name: Cypress install
+        uses: cypress-io/github-action@v5
+        with:
+          runTests: false
+          build: pnpm build:ci
+
+      - name: Save Build Folder
+        uses: actions/upload-artifact@v3
+        with:
+          name: build-folders
+          if-no-files-found: error
+          path: |
+            ./.next
+            ./.contentlayer
+
   e2e-test:
     runs-on: ubuntu-latest
+    needs: install
     # Runs tests in parallel with matrix strategy https://docs.cypress.io/guides/guides/parallelization
     # https://docs.github.com/en/actions/using-jobs/using-a-matrix-for-your-jobs
     # Also see warning here https://github.com/cypress-io/github-action#parallel
@@ -48,42 +73,29 @@ jobs:
       matrix:
         node-version: [16, 18, 20] # Uses 2 parallel instances
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/cache@v3
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v2
+
+      - name: Download the build folders
+        uses: actions/download-artifact@v3
         with:
-          path: |
-            ~/.cache/Cypress
-            ${{ github.workspace }}/.next/cache
-          key: cypress-cache-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml') }}--${{ hashFiles('**/*.[jt]s', '**/*.[jt]sx') }}
-
-      - run: node -v
-      - uses: pnpm/action-setup@v2
-
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v3
-        with:
-          node-version: ${{ matrix.node-version }}
-          registry-url: https://registry.npmjs.org/
-          cache: pnpm
-
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile
-
-      - name: Generate content
-        run: npx contentlayer build
+          name: build-folders
+          path: ./
 
       - name: Cypress
         uses: cypress-io/github-action@v5.8.3
         with:
           tag: github
-          install: false
-          build: pnpm build
           start: pnpm start
           wait-on: 'http://localhost:3000' # Waits for above
           # Records to Cypress Cloud
           # https://docs.cypress.io/guides/cloud/projects#Set-up-a-project-to-record
           record: true
           parallel: true # Runs test in parallel using settings above
+          group: e2e
         env:
           # For recording and parallelization to work you must set your CYPRESS_RECORD_KEY
           # in GitHub repo → Settings → Secrets → Actions
@@ -93,48 +105,39 @@ jobs:
 
   component-test:
     runs-on: ubuntu-latest
+    needs: install
     # Runs tests in parallel with matrix strategy https://docs.cypress.io/guides/guides/parallelization
     # https://docs.github.com/en/actions/using-jobs/using-a-matrix-for-your-jobs
     # Also see warning here https://github.com/cypress-io/github-action#parallel
     strategy:
       fail-fast: false # https://github.com/cypress-io/github-action/issues/48
-      # matrix:
-      #   containers: [1, 2] # Uses 2 parallel instances
+      matrix:
+        node-version: [16, 18, 20] # Uses 2 parallel instances
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/cache@v3
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v2
+
+      - name: Download the build folders
+        uses: actions/download-artifact@v3
         with:
-          path: |
-            ~/.cache
-          key: cypress-cache-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml') }}
-
-      - uses: pnpm/action-setup@v2
-
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v3
-        with:
-          node-version: ${{ matrix.node-version }}
-          registry-url: https://registry.npmjs.org/
-          cache: pnpm
-
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile
-
-      - name: Generate content
-        run: npx contentlayer build
+          name: build-folders
+          path: ./
 
       - name: Cypress
         uses: cypress-io/github-action@v5.8.3
         with:
           tag: github
           component: true
-          build: pnpm build
           start: pnpm start
           wait-on: 'http://localhost:3000' # Waits for above
           # Records to Cypress Cloud
           # https://docs.cypress.io/guides/cloud/projects#Set-up-a-project-to-record
           record: true
-          # parallel: true # Runs test in parallel using settings above
+          parallel: true # Runs test in parallel using settings above
+          group: ct
         env:
           # For recording and parallelization to work you must set your CYPRESS_RECORD_KEY
           # in GitHub repo → Settings → Secrets → Actions
